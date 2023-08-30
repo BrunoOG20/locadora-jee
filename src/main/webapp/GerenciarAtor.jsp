@@ -40,7 +40,7 @@
                 <td><%= ator.getId() %></td>
                 <td><%= ator.getNome() %></td>
                 <td><a href="<%= request.getContextPath() %>/EditarAtor.jsp?id=<%= ator.getId() %>"><button class="edit-button">Editar</button></a></td>
-                <td><a href="<%= request.getContextPath() %>/AtorController?tipo=2&id=<%= ator.getId() %>"><button class="delete-button">Remover</button></a></td>
+                <td><a href="<%= request.getContextPath() %>/AtorController?tipo=2&id=<%= ator.getId() %>"><button onclick="return confirm('Deseja excluir o Ator <%= ator.getNome()%>? ')" class="delete-button">Remover</button></a></td>
             </tr>
             <%
                 }

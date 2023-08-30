@@ -47,7 +47,7 @@
             <td><%= classe.getValor() %></td>
             <td><%= classe.getDataDevolucao() %></td>
             <td><a href="<%= request.getContextPath() %>/EditarClasse.jsp?id=<%= classe.getId() %>"><button class="edit-button">Editar</button></a></td>
-            <td><a href="<%= request.getContextPath() %>/ClasseController?tipo=2&id=<%= classe.getId() %>"><button class="delete-button">Remover</button></a></td>
+            <td><a href="<%= request.getContextPath() %>/ClasseController?tipo=2&id=<%= classe.getId() %>"><button onclick="return confirm('Deseja excluir o Ator <%= classe.getNome()%>? ')" class="delete-button">Remover</button></a></td>
         </tr>
         <%
             }
