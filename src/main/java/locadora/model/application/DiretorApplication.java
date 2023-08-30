@@ -1,6 +1,5 @@
 package locadora.model.application;
 
-import jakarta.persistence.criteria.CriteriaQuery;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -36,95 +35,23 @@ public class DiretorApplication {
             return 1;
         }
     }
-
     public static int excluirDiretor(int id) throws HibernateException {
-        Session sessao = null;
         Object obj = DiretorApplication.buscarDiretorPorId(id);
-
-        try {
-            sessao = PersistenceUtil.getSession();
-            sessao.beginTransaction();
-
-            sessao.delete(obj);
-
-            sessao.getTransaction().commit();
-            return 0;
-
-        } catch( HibernateException erro) {
-            sessao.getTransaction().rollback();
-            erro.printStackTrace();
-            return 1;
-        }
+        return GenericApplication.excluir(obj);
     }
 
     public static List listarDiretor() throws HibernateException {
-        Session sessao = null;
-        List lista = null;
-
-        try {
-            sessao = PersistenceUtil.getSession();
-            sessao.beginTransaction();
-
-            CriteriaQuery consulta = sessao.getCriteriaBuilder().createQuery(Diretor.class);
-
-            consulta.from(Diretor.class);
-            lista = sessao.createQuery(consulta).getResultList();
-
-            sessao.getTransaction().commit();
-        } catch( HibernateException erro) {
-            if ( sessao != null ){
-                sessao.getTransaction().rollback();
-                sessao.close();
-            }
-        }
-        return lista;
+        return GenericApplication.listar(Diretor.class);
     }
 
-    public static Diretor buscarDiretorPorId(int id) throws HibernateException {
-        Session sessao = null;
-        Diretor objReturn = null;
-
-        try   {
-            sessao = PersistenceUtil.getSession();
-            sessao.getTransaction().begin();
-
-            objReturn = sessao.get(Diretor.class, id);
-
-            sessao.getTransaction().commit();
-        } catch ( HibernateException ex) {
-            if ( sessao != null) {
-                sessao.getTransaction().rollback();
-                sessao.close();
-            }
-            throw new HibernateException(ex);
-        }
-        return objReturn;
-
+    public static Object buscarDiretorPorId(int id) throws HibernateException {
+        return GenericApplication.buscarPorId(Diretor.class, id);
     }
 
     public static int salvarDiretor(String nome, int id) throws HibernateException {
-        Session sessao = null;
-
-        Diretor obj = DiretorApplication.buscarDiretorPorId(id);
-
-        if (obj == null){
-            return 2;
-        }
-
-        obj.setNome(nome);
-
-        try {
-            sessao = PersistenceUtil.getSession();
-            sessao.beginTransaction();
-
-            sessao.update(obj);
-
-            sessao.getTransaction().commit();
-            return 0;
-        } catch( HibernateException erro) {
-            sessao.getTransaction().rollback();
-            erro.printStackTrace();
-            return 1;
-        }
+        Object obj = DiretorApplication.buscarDiretorPorId(id);
+        Diretor d = (Diretor)obj;
+        d.setNome(nome);
+        return GenericApplication.salvar(d);
     }
 }

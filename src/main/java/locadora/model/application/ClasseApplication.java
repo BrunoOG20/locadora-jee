@@ -1,7 +1,5 @@
 package locadora.model.application;
 
-import jakarta.persistence.criteria.CriteriaQuery;
-import locadora.model.domain.Ator;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -42,95 +40,26 @@ public class ClasseApplication {
     }
 
     public static int excluirClasse(int id) throws HibernateException {
-        Session sessao = null;
         Object obj = ClasseApplication.buscarClassePorId(id);
-
-        try {
-            sessao = PersistenceUtil.getSession();
-            sessao.beginTransaction();
-
-            sessao.delete(obj);
-
-            sessao.getTransaction().commit();
-            return 0;
-
-        } catch( HibernateException erro) {
-            sessao.getTransaction().rollback();
-            erro.printStackTrace();
-            return 1;
-        }
+        return GenericApplication.excluir(obj);
     }
 
     public static List listarClasse() throws HibernateException {
-        Session sessao = null;
-        List lista = null;
-
-        try {
-            sessao = PersistenceUtil.getSession();
-            sessao.beginTransaction();
-
-            CriteriaQuery consulta = sessao.getCriteriaBuilder().createQuery(Classe.class);
-
-            consulta.from(Classe.class);
-            lista = sessao.createQuery(consulta).getResultList();
-
-            sessao.getTransaction().commit();
-        } catch( HibernateException erro) {
-            if ( sessao != null ){
-                sessao.getTransaction().rollback();
-                sessao.close();
-            }
-        }
-        return lista;
+        return GenericApplication.listar(Classe.class);
     }
 
-    public static Classe buscarClassePorId(int id) throws HibernateException {
-        Session sessao = null;
-        Classe objReturn = null;
-
-        try   {
-            sessao = PersistenceUtil.getSession();
-            sessao.getTransaction().begin();
-
-            objReturn = sessao.get(Classe.class, id);
-
-            sessao.getTransaction().commit();
-        } catch ( HibernateException ex) {
-            if ( sessao != null) {
-                sessao.getTransaction().rollback();
-                sessao.close();
-            }
-            throw new HibernateException(ex);
-        }
-        return objReturn;
-
+    public static Object buscarClassePorId(int id) throws HibernateException {
+        return GenericApplication.buscarPorId(Classe.class, id);
     }
 
     public static int salvarClasse(String nome, double valor, int dataDev, int id) throws HibernateException {
-        Session sessao = null;
+        Object obj = ClasseApplication.buscarClassePorId(id);
+        Classe c = (Classe)obj;
 
-        Classe obj = ClasseApplication.buscarClassePorId(id);
+        c.setNome(nome);
+        c.setValor(valor);
+        c.setDataDevolucao(dataDev);
 
-        if (obj == null){
-            return 2;
-        }
-
-        obj.setNome(nome);
-        obj.setValor(valor);
-        obj.setDataDevolucao(dataDev);
-
-        try {
-            sessao = PersistenceUtil.getSession();
-            sessao.beginTransaction();
-
-            sessao.update(obj);
-
-            sessao.getTransaction().commit();
-            return 0;
-        } catch( HibernateException erro) {
-            sessao.getTransaction().rollback();
-            erro.printStackTrace();
-            return 1;
-        }
+        return GenericApplication.salvar(c);
     }
 }

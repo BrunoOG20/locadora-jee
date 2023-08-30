@@ -15,7 +15,8 @@
     <div class="form">
         <%
             String id = request.getParameter("id");
-            Ator a = AtorApplication.buscarAtorPorId(Integer.parseInt(id));
+            Object obj = AtorApplication.buscarAtorPorId(Integer.parseInt(id));
+            Ator a = (Ator)obj;
         %>
         <form method="get" action="AtorController">
             <input type="hidden" name="tipo" value="3">

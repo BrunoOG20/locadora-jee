@@ -14,7 +14,8 @@
     <div class="form">
         <%
             String id = request.getParameter("id");
-            Classe c = ClasseApplication.buscarClassePorId(Integer.parseInt(id));
+            Object obj = ClasseApplication.buscarClassePorId(Integer.parseInt(id));
+            Classe c = (Classe)obj;
         %>
         <form method="get" action="ClasseController">
             <input type="hidden" name="tipo" value="3">

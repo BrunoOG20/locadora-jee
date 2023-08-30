@@ -1,5 +1,4 @@
 <%@ page import="locadora.model.domain.Diretor" %>
-<%@ page import="java.util.List" %>
 <%@ page import="locadora.model.application.DiretorApplication" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -15,7 +14,8 @@
     <div class="form">
         <%
             String id = request.getParameter("id");
-            Diretor d = DiretorApplication.buscarDiretorPorId(Integer.parseInt(id));
+            Object obj = DiretorApplication.buscarDiretorPorId(Integer.parseInt(id));
+            Diretor d = (Diretor)obj;
         %>
         <form method="get" action="DiretorController">
             <input type="hidden" name="tipo" value="3">

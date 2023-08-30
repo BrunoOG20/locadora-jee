@@ -5,7 +5,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import locadora.model.domain.Ator;
 import locadora.utils.PersistenceUtil;
-import jakarta.persistence.criteria.CriteriaQuery;
 
 import java.util.List;
 
@@ -37,94 +36,23 @@ public class AtorApplication {
     }
 
     public static int excluirAtor(int id) throws HibernateException {
-        Session sessao = null;
         Object obj = AtorApplication.buscarAtorPorId(id);
-
-        try {
-            sessao = PersistenceUtil.getSession();
-            sessao.beginTransaction();
-
-            sessao.delete(obj);
-
-            sessao.getTransaction().commit();
-            return 0;
-
-        } catch( HibernateException erro) {
-            sessao.getTransaction().rollback();
-            erro.printStackTrace();
-            return 1;
-        }
+        return GenericApplication.excluir(obj);
     }
 
     public static List listarAtor() throws HibernateException {
-        Session sessao = null;
-        List lista = null;
-
-        try {
-            sessao = PersistenceUtil.getSession();
-            sessao.beginTransaction();
-
-            CriteriaQuery consulta = sessao.getCriteriaBuilder().createQuery(Ator.class);
-
-            consulta.from(Ator.class);
-            lista = sessao.createQuery(consulta).getResultList();
-
-            sessao.getTransaction().commit();
-        } catch( HibernateException erro) {
-            if ( sessao != null ){
-                sessao.getTransaction().rollback();
-                sessao.close();
-            }
-        }
-        return lista;
+        return GenericApplication.listar(Ator.class);
     }
 
-    public static Ator buscarAtorPorId(int id) throws HibernateException {
-        Session sessao = null;
-        Ator objReturn = null;
-
-        try   {
-            sessao = PersistenceUtil.getSession();
-            sessao.getTransaction().begin();
-
-            objReturn = sessao.get(Ator.class, id);
-
-            sessao.getTransaction().commit();
-        } catch ( HibernateException ex) {
-            if ( sessao != null) {
-                sessao.getTransaction().rollback();
-                sessao.close();
-            }
-            throw new HibernateException(ex);
-        }
-        return objReturn;
-
+    public static Object buscarAtorPorId(int id) throws HibernateException {
+        return GenericApplication.buscarPorId(Ator.class, id);
     }
 
     public static int salvarAtor(String nome, int id) throws HibernateException {
-        Session sessao = null;
-
-        Ator obj = AtorApplication.buscarAtorPorId(id);
-
-        if (obj == null){
-            return 2;
-        }
-
-        obj.setNome(nome);
-
-        try {
-            sessao = PersistenceUtil.getSession();
-            sessao.beginTransaction();
-
-            sessao.update(obj);
-
-            sessao.getTransaction().commit();
-            return 0;
-        } catch( HibernateException erro) {
-            sessao.getTransaction().rollback();
-            erro.printStackTrace();
-            return 1;
-        }
+        Object obj = AtorApplication.buscarAtorPorId(id);
+        Ator a = (Ator)obj;
+        a.setNome(nome);
+        return GenericApplication.salvar(a);
     }
 
 }
